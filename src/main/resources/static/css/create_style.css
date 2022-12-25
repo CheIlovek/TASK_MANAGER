@@ -1,0 +1,103 @@
+body {
+    font-family: "Catamaran","Arial",sans-serif;
+    margin: 0;
+    line-height: 1.6;
+    font-size: 15px;
+    color: #333;
+    background: rgb(58,70,251);
+background: radial-gradient(circle, rgba(58,70,251,1) 0%, rgba(45,140,252,1) 100%);
+}
+
+*,
+*::after,
+*::before { 
+    box-sizing: border-box;
+
+}
+
+h1,h2,h3,h4,h5,h6 {
+    margin: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.page_title {
+    color:#fff;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-top: 10px;
+}
+
+.form {
+    padding: 10px 30px;
+}
+
+
+.form_input {
+    margin-bottom: 1rem;
+}
+
+  /* стили для label */
+.form_input_label {
+    display: block;
+    color:#fff;
+    font-size: 18px;
+    margin-bottom: 0.25rem;
+}
+
+  /* стили для input */
+.form_input_input {
+    display: block;
+    width: 100%;
+    height: calc(2.25rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #bdbdbd;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form_input_textarea {
+    display: block;
+    width: 100%;
+    height: calc((2.25rem + 2px)*3);
+    padding: 0.375rem 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #bdbdbd;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    resize: vertical;
+}
+
+.add_proj {
+    color: #fff; /* цвет текста */
+    margin: 5px 5px 5px 20px;
+    height: 32px;
+    width: 120px;
+    border: solid 1px;
+    border-color: #000;
+    text-decoration: none; /* убирать подчёркивание у ссылок */
+    user-select: none; /* убирать выделение текста */
+    background: rgb(32, 30, 150); /* фон кнопки */
+    padding: .2em 1em; /* отступ от текста */
+    outline: none; /* убирать контур в Mozilla */
+} 
+.add_proj:hover { background: rgb(18, 137, 216); } /* при наведении курсора мышки */
+.add_proj:active { background: rgb(85, 174, 233); } /* при нажатии */

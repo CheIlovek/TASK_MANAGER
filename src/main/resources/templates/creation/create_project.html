@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/create_style.css" th:href="@{/css/create_style.css}">
+    <link rel="stylesheet" href="../css/blocks/header_style.css" th:href="@{/css/blocks/header_style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header th:insert="blocks/header :: header"></header>
+
+    <header class="header">
+        <div class="container">
+            <div class="header_inner">
+                <div class="header_name">TASK MANAGER</div>
+                <nav class="nav">
+                    <a href="#" class="nav_link">About</a>
+                    <a href="#" class="nav_link">Log in</a>
+                    <a href="#" class="nav_link">News</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="page_title">New project</h1>
+
+        <form method="post" class="form" th:action="@{/project/add}">
+            <div class="form_input">
+                <label class="form_input_label" for="title">Project title</label>
+                <input class="form_input_input" type="text" name="title" id="title" placeholder="Project title"/>
+            </div>
+            <div class="form_input">
+                <label class="form_input_label" for="description">Project description</label>
+                <textarea class="form_input_textarea" type="text" name="description" id="description" placeholder="Project description"></textarea>
+            </div>
+            <div class="form_input">
+                <label class="form_input_label" for="members">Project members STYLE CHANGE</label>
+                <datalist id="suggestions">
+                    <option>First option</option>
+                    <option>Second Option</option>
+                </datalist>
+                <input  autoComplete="on" name="members" id="members" list="suggestions"/> 
+            </div>
+            
+            <button class="add_proj" type="submit" value="create">Create</button>
+        </form>
+    </div>
+    <footer th:insert="blocks/basement :: basement"></footer>
+</body>
+</html>

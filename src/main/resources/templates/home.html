@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home page</title>
+    <link rel="stylesheet" href="css/home_style.css" th:href="@{/css/home_style.css}">
+    <link rel="stylesheet" href="css/blocks/header_style.css" th:href="@{/css/blocks/header_style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header th:insert="blocks/header :: header"></header>
+    <header class="header">
+        <div class="container">
+            <div class="header_inner">
+                <div class="header_name">TASK MANAGER</div>
+                <nav class="nav">
+                    <a href="#" class="nav_link">About</a>
+                    <a href="#" class="nav_link">Log in</a>
+                    <a href="#" class="nav_link">News</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="title">
+            <h1 class="page_title">Projects</h1>
+            <a class="add_proj" href="create_project.html" th:href="@{/create_project}">Create project</a>
+        </div>
+        <a class="table_block" href="tables/table_name.html">
+            <div class="table_name">Aboba</div>
+            <div class="table_count_users">10 members</div>
+        </a>
+        <a class="table_block" href="tables/table_name.html">
+            <div class="table_name">Aboba</div>
+            <div class="table_count_users">10 members</div>
+        </a>
+    </div>
+
+    <footer th:insert="blocks/basement :: basement"></footer>
+</body>
+</html>
