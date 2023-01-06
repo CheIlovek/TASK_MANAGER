@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Log In</title>
-    <link rel="stylesheet" href="../css/reg.css" th:href="@{/css/reg.css}">
+    <link rel="stylesheet" th:href="@{/css/reg.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <div class="box">
-            <form class="form" th:action="@{/registration/login}" method="post">
+            <form class="form" th:action="@{/registration/login}" method="post" modelAttribute="userForm">
                 <h1 class="form_header">Log In</h1>
                 <h2 class="form_textline">Username</h2>
                 <input type="text" name="username" placeholder="Your name" class="form_input"><br>
@@ -21,7 +21,11 @@
                 <h3 class="form_textline" th:if="${param.logout}">
                     You have been logged out.
                 </h3>
-                <button class ="sign_in" type="submit" value="Log In">Log In</button>
+                <div>
+                    <a class ="sub_button" th:href="@{/registration/signup}">Sign Up</a>
+                    <button class ="sign_in" type="submit" value="Log In">Log In</button>
+                </div>
+
             </form> 
         </div>
     </div>

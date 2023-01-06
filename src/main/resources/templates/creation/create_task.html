@@ -3,45 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="../css/create_style.css" th:href="@{/css/create_style.css}">
-    <link rel="stylesheet" href="../css/blocks/header_style.css" th:href="@{/css/blocks/header_style.css}">
+    <link rel="stylesheet" th:href="@{/css/create_style.css}">
+    <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
 <body>
     <header th:insert="blocks/header :: header"></header>
 
-    <header class="header">
-        <div class="container">
-            <div class="header_inner">
-                <div class="header_name">TASK MANAGER</div>
-                <nav class="nav">
-                    <a href="#" class="nav_link">About</a>
-                    <a href="#" class="nav_link">Log in</a>
-                    <a href="#" class="nav_link">News</a>
-                </nav>
-            </div>
-        </div>
-    </header>
 
     <div class="container">
         <h1 class="page_title">New task</h1>
-        <form class="form" method="post">
+        <form class="form" method="post" modelAttribute="TaskForm" th:action="@{/creation/create_task}">
+            <input type="hidden" th:value="${project_id}" name="projectId" id="projectId">
+            <input type="hidden" value="2" name="status" id="status">
+            <input type="hidden" value="a" name="member" id="member">
             <div class="form_input">
                 <label class="form_input_label" for="title">Task title</label>
                 <input class="form_input_input" type="text" name="title" id="title" placeholder="Task title"/>
             </div>
             <div class="form_input">
                 <label class="form_input_label" for="description">Task description</label>
-                <textarea class="form_input_textarea" type="text" name="description" id="description" placeholder="Task description"></textarea>
+                <textarea class="form_input_textarea" name="description" id="description" placeholder="Task description"></textarea>
             </div>
             <div class="form_input">
                 <label class="form_input_label" for="priority">Task priority</label>
-                <datalist id="p_list">
-                    <option value="High" />
-                    <option value="Medium" />
-                    <option value="Low" />
-                </datalist>
-                <input  autoComplete="on" name="priority" id="priority" list="p_list"/> 
+                <input class="form_input_input" type="text" name="priority" id="priority"/>
             </div>
             
             <button class="add_proj" type="submit" value="create">Create</button>

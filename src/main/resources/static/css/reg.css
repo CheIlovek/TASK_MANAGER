@@ -74,3 +74,17 @@ h1,h2,h3,h4,h5,h6 {
 
 .sign_in:hover { background: rgb(169, 175, 247);; } /* при наведении курсора мышки */
 .sign_in:active { background:  rgb(36, 50, 250)} /* при нажатии */
+
+
+.sub_button {
+    font-size: 15px;
+    color: #fff;
+    margin-right: 10px;
+    text-decoration: none;
+    transition: color .2s linear;
+}
+
+
+.sub_button:hover {
+    color: #333;
+}

@@ -1,25 +1,40 @@
 package ru.tskmngr.task_manager.models;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.tskmngr.task_manager.repo.ProjectRepository;
+
 import javax.persistence.*;
 
 @Entity(name = "task")
 public class Task {
 
+
+
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne
-    private Project projectId;
+    private Project project;
 
     private String title,description;
     private int status,priority;
 
-    public Project getProjectId() {
-        return projectId;
+    public Task(Project project, String title, String description, int status, int priority) {
+        this.project = project;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
     }
 
-    public void setProjectId(Project projectId) {
-        this.projectId = projectId;
+    public Task() {}
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project projectId) {
+        this.project = projectId;
     }
 
     public long getId() {

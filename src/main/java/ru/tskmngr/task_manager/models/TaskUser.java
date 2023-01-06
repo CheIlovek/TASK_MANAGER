@@ -14,6 +14,14 @@ public class TaskUser {
 
     private String role;
 
+    public TaskUser(long taskId, long userId, String role) {
+        this.taskId = taskId;
+        this.userId = userId;
+        this.role = role;
+    }
+
+    public TaskUser() {}
+
     public long getTaskId() {
         return taskId;
     }

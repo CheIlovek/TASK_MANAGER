@@ -10,4 +10,6 @@ public class ProjectUserId implements Serializable {
         this.projectId = projectId;
         this.userId = userId;
     }
+
+    public ProjectUserId() {}
 }

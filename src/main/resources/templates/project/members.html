@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Project </title>
+    <link rel="stylesheet" th:href="@{/css/project_style.css}">
+    <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<header th:insert="blocks/project_header :: header"></header>
+
+<div class="container">
+    <div class="title">
+        <h1 class="page_title">Members</h1>
+        <a class="add_proj" th:if="${role == 'OWNER' || role == 'MANAGER'}" th:href="@{'project/create_task?project_id=' + ${project.getId()}}">Add task</a>
+        <!-- TODO GET TASK логика -->
+    </div>
+
+    <ul class="task_memebers">
+        <li class="task_memeber" th:each="member : ${members}"
+            th:text="${member.getUsername() + ' - ' + member.getRole()}"></li>
+    </ul>
+
+</div>
+
+<footer th:insert="blocks/basement :: basement"></footer>
+</body>
+</html>

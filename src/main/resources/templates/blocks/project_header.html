@@ -1,0 +1,13 @@
+<div th:fragment="header">
+  <header class="header">
+    <div class="container">
+      <div class="header_inner">
+        <nav class="nav">
+          <a th:href="@{'/project/info?project_id=' + ${project.getId()}}" class="nav_link">Project</a>
+          <a th:href="@{'/project/tasks?project_id=' + ${project.getId()}}" class="nav_link">Tasks</a>
+          <a th:href="@{'/project/members?project_id=' + ${project.getId()}}" class="nav_link">Members</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+</div>

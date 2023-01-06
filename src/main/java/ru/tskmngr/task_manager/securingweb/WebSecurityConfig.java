@@ -1,12 +1,13 @@
 package ru.tskmngr.task_manager.securingweb;
 
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import ru.tskmngr.task_manager.service.UserService;
 
 
 @Configuration
@@ -16,10 +17,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    @Autowired
 //    DataSource dataSource;
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    private CustomAuthenticationProvider customAuthenticationProvider;
+
+
 
 //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -38,14 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-//                .csrf()
-//                .disable()
+                .csrf()
+                .disable()
                 .authorizeRequests()
-                .antMatchers("/registration/login").not().fullyAuthenticated()
-                .antMatchers("/main_page", "/index","/table_page","/сreate_project").hasAnyRole("ADMIN","USER")
+                .antMatchers("/registration/login","/registration/signup").not().fullyAuthenticated()
                 //.antMatchers("/").permitAll()
                 .antMatchers("/admin/*").hasRole("ADMIN")
-                .antMatchers("/", "/css/*").permitAll()
+                .antMatchers("/", "/css/**").permitAll()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
@@ -60,8 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/");
     }
 
-//    @Autowired
-//    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
-//    }
+    @Autowired
+    protected void configureGlobal(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(customAuthenticationProvider)/*.passwordEncoder(bCryptPasswordEncoder())*/;
+    }
 }

@@ -1,10 +1,9 @@
 package ru.tskmngr.task_manager.repo;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.tskmngr.task_manager.models.User;
 
-import java.util.List;
 
-public interface UserRepository extends CrudRepository<User, Integer> {
-    List<User> findByUsername(String username);
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findByUsername(String username);
 }

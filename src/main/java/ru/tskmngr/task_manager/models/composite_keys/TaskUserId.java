@@ -11,5 +11,6 @@ public class TaskUserId implements Serializable {
         this.userId = userId;
     }
 
+    public TaskUserId() {}
     // equals() and hashCode()
 }

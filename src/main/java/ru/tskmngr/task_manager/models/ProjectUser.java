@@ -1,8 +1,12 @@
 package ru.tskmngr.task_manager.models;
 
+import ru.tskmngr.task_manager.models.composite_keys.ProjectUserId;
+import ru.tskmngr.task_manager.models.composite_keys.TaskUserId;
+
 import javax.persistence.*;
 
-@Entity(name = "project_member")
+@Entity(name = "project_user")
+@IdClass(ProjectUserId.class)
 public class ProjectUser {
 
     @Id
@@ -10,6 +14,13 @@ public class ProjectUser {
     @Id
     private long userId;
     private String role;
+
+    public ProjectUser(long projectId, long userId,String role) {
+        this.projectId = projectId;
+        this.userId = userId;
+        this.role = role;
+    }
+    public ProjectUser() {}
 
     public long getProjectId() {
         return projectId;
