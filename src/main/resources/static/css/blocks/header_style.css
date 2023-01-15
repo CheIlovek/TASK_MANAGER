@@ -19,6 +19,10 @@
     font-size: 30px;
     padding: 8px 0;
     color: #fff;
+    text-decoration: none;
+    transition: color .2s linear;
+    vertical-align: top;
+    margin: 0 10px;
 }
 
 .header_inner {
@@ -39,7 +43,6 @@
     vertical-align: top;
     margin: 0 10px;
     position: relative;
-    
 }
 
 .nav_link::after {

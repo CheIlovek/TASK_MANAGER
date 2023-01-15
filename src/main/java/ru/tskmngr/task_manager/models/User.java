@@ -11,7 +11,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private String username,password,city;
+    private String username,password;
 
 
     @ManyToOne
@@ -83,12 +83,5 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
 
 }

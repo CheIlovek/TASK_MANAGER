@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin panel</title>
+    <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/user_managment.css}">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header th:insert="blocks/header :: header"></header>
+
+    <div class="container">
+        <div class="user" th:each="user : ${users}">
+            <div class="user-name" th:text="${user.getUsername()}"/>
+            <div class="buttons">
+                <form  th:action="@{/admin_panel/change_role}" method="post">
+                    <input hidden th:value="${user.getAuthority().getAuthority() == 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN'}" name="newRole">
+                    <input hidden th:value="${user.getId()}" name="userId">
+                    <button class="user-role btn"
+                            th:text="${user.getAuthority().getAuthority() == 'ROLE_ADMIN' ? 'DEMOTE TO USER' : 'PROMOTE TO ADMIN' }"/>
+                </form>
+                <form  th:action="@{/admin_panel/delete_user}" method="post">
+                    <input hidden th:value="${user.getId()}" name="userId">
+                    <button class="user-dlt btn" type="submit">DELETE</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Create task</title>
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
     <link rel="stylesheet" th:href="@{/css/create_style.css}">
     <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
@@ -13,7 +14,7 @@
 
     <div class="container">
         <h1 class="page_title">New task</h1>
-        <form class="form" method="post" modelAttribute="TaskForm" th:action="@{/creation/create_task}">
+        <form class="form" method="post" modelAttribute="TaskForm" th:action="@{/project/create_task}">
             <input type="hidden" th:value="${project_id}" name="projectId" id="projectId">
             <input type="hidden" value="2" name="status" id="status">
             <input type="hidden" value="a" name="member" id="member">
@@ -30,10 +31,9 @@
                 <input class="form_input_input" type="text" name="priority" id="priority"/>
             </div>
             
-            <button class="add_proj" type="submit" value="create">Create</button>
+            <button class="cnf btn" type="submit" value="create">Create</button>
         </form>
     </div>
 
-    <footer th:insert="blocks/basement :: basement"></footer>
 </body>
 </html>

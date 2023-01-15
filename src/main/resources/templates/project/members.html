@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Project </title>
-    <link rel="stylesheet" th:href="@{/css/project_style.css}">
+    <title>Project members</title>
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/user_managment.css}">
     <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
@@ -14,17 +15,30 @@
 <div class="container">
     <div class="title">
         <h1 class="page_title">Members</h1>
-        <a class="add_proj" th:if="${role == 'OWNER' || role == 'MANAGER'}" th:href="@{'project/create_task?project_id=' + ${project.getId()}}">Add task</a>
-        <!-- TODO GET TASK логика -->
     </div>
 
-    <ul class="task_memebers">
-        <li class="task_memeber" th:each="member : ${members}"
-            th:text="${member.getUsername() + ' - ' + member.getRole()}"></li>
-    </ul>
+    <div class="user" th:each="member : ${members}" >
+        <div class="user-name" th:text="${member.getUser().getUsername()}"/>
+        <div class="user-name" th:if="${member.getRole() == 'OWNER'}">OWNER</div>
+        <div class="user-name" th:if="${role == 'WORKER' && member.getRole() != 'OWNER'}" th:text="${member.getRole()}"></div>
+        <div class="buttons">
+            <form th:action="@{/project/change_role}" method="post">
+                <input hidden th:value="${member.getRole() == 'MANAGER' ? 'WORKER' : 'MANAGER'}" name="newRole">
+                <input hidden th:value="${member.getUser().getId()}" name="userId">
+                <input hidden th:value="${project.getId()}" name="prjId">
+                <button class="user-role btn" th:if="${member.getRole() != 'OWNER' && (role == 'MANAGER' || role == 'OWNER')}"
+                        th:text="${member.getRole() == 'MANAGER' ? 'DEMOTE TO WORKER' : 'PROMOTE TO MANAGER' }"/>
+            </form>
+            <form th:action="@{/project/delete_user}" method="post">
+                <input hidden th:value="${project.getId()}" name="prjId">
+                <input hidden th:value="${member.getUser().getId()}" name="userId">
+                <button class="user-dlt btn" type="submit" th:if="${member.getRole() != 'OWNER' && (role == 'MANAGER' || role == 'OWNER')}">REMOVE FROM PROJECT</button>
+            </form>
+        </div>
+    </div>
+
 
 </div>
 
-<footer th:insert="blocks/basement :: basement"></footer>
 </body>
 </html>

@@ -2,9 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Project </title>
+    <title>Project info</title>
     <link rel="stylesheet" th:href="@{/css/project_style.css}">
     <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -13,15 +14,13 @@
 
 <div class="container">
     <div class="title">
-        <h1 class="page_title" th:value="${project.getTitle()}"></h1>
-        <p class="project_description" th:value="${project.getDescription()}"></p>
-        <!-- TODO GET TASK логика -->
+        <h1 class="page_title" th:text="${project.getTitle()}"></h1>
     </div>
-    <a class="add_proj" th:if="${role == 'OWNER'}" th:href="@{'/delete_project?project_id=' + ${project.getId()}}">Delete project</a>
+    <p class="project_description" th:text="${project.getDescription()}"></p>
+    <a class="btn deny" th:if="${role == 'OWNER'}" th:href="@{'/project/delete_project?project_id=' + ${project.getId()}}">Delete project</a>
 
 
 </div>
 
-<footer th:insert="blocks/basement :: basement"></footer>
 </body>
 </html>

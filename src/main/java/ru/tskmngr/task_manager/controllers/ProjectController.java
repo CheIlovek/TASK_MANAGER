@@ -5,31 +5,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.tskmngr.task_manager.models.Project;
-import ru.tskmngr.task_manager.models.ProjectUser;
-import ru.tskmngr.task_manager.models.Task;
-import ru.tskmngr.task_manager.models.User;
+import ru.tskmngr.task_manager.models.*;
 import ru.tskmngr.task_manager.repo.*;
 import ru.tskmngr.task_manager.service.ProjectService;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Optional;
 
-
-// TODO ЕСЛИ РОЛЬ МЕНЕДЖЕРА ТО ВИДИТ ВСЕ ЗАДАНИЯ CHECK
-// TODO И МОЖЕТ СОЗДАВАТЬ НОВЫЕ CHECK
-
-// TODO ОСТАЛЬНЫЕ МОГУТ БРАТЬ НЕ ЗАВЕРШЕННЫЕ ЗАДАНИЯ
-// TODO И ПОМЕЧАТЬ СВОИ КАК ВЫПОЛНЕННЫЕ
-
-// TODO РАЗДАЧА РОЛЕЙ ПРИ СОЗДАНИИ ПРОЕКТА (MEGA HARDD??!?!?)
-
-// TODO УДАЛЕНИЕ ПРОЕКТОВ
 
 @Controller
 public class ProjectController {
@@ -47,6 +33,8 @@ public class ProjectController {
     ProjectUserRepository PURepository;
 
     @Autowired
+    TaskUserRepository TURepository;
+    @Autowired
     ProjectService projectService;
 
 
@@ -55,8 +43,9 @@ public class ProjectController {
         long prjId = Long.parseLong(projectId);
         String name = principal.getName();
         User curUser = userRepository.findByUsername(name);
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
         String role = PURepository.findByUserIdAndProjectId(curUser.getId(),prjId).getRole();
-        if (role.equals("OWNER")) {
+        if (role.equals("OWNER") || isAdmin) {
             projectService.deleteProject(prjId);
             return "redirect:/home";
         }
@@ -64,32 +53,30 @@ public class ProjectController {
     }
 
     @GetMapping("/project/create_project")
-    public String createProject(Model model) {
+    public String createProject(Model model,Principal principal) {
         Iterable<User> users = userRepository.findAll();
         LinkedList<UserPublic> userPublics = new LinkedList<>();
         for (User user : users) {
-            userPublics.add(new UserPublic(user.getUsername(),user.getId()));
+            if (!Objects.equals(principal.getName(), user.getUsername()))
+                userPublics.add(new UserPublic(user.getUsername(),user.getId()));
         }
+        User curUser = userRepository.findByUsername(principal.getName());
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        model.addAttribute("admin",isAdmin);
         model.addAttribute("users",userPublics);
         return "/project/create_project";
     }
 
-    @PostMapping("/create_project")
-    public String createProjectPost(@ModelAttribute("projectForm")@Valid ProjectForm projectForm,
-                                    BindingResult bindingResult, Model model, Principal principal) {
-        //TODO ДОБАВИТЬ УЧАСТНИКОВ ПРОЕКТА
+    @PostMapping("/project/create_project")
+    public String createProjectPost(
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("isManager") String[] managers,
+            @RequestParam("member") String[] members,
+            Model model, Principal principal) {
         String name = principal.getName();
         User curUser = userRepository.findByUsername(name);
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("error");
-            return "/home";
-        }
-
-        Project project = new Project(
-                projectForm.getTitle(),
-                projectForm.getDescription()
-        );
+        Project project = new Project(title, description);
         projectRepository.save(project);
         ProjectUser projectOwner = new ProjectUser(
                 project.getId(),
@@ -97,8 +84,14 @@ public class ProjectController {
                 "OWNER"
         );
         projectUserRepository.save(projectOwner);
-        for (String strId : projectForm.getMembers()) {
-            long id = Long.parseLong(strId);
+        LinkedList<Long> managerIds = new LinkedList<>();
+        for (String manager : managers) {
+            long val = Long.parseLong(manager);
+            managerIds.add(val);
+        }
+
+        for (String idStr : members) {
+            long id = Long.parseLong(idStr);
             Optional<User> optionalUser = userRepository.findById(id);
             User member;
             if (optionalUser.isPresent()) {
@@ -106,7 +99,7 @@ public class ProjectController {
                 ProjectUser projectMember = new ProjectUser(
                         project.getId(),
                         member.getId(),
-                        "WORKER"
+                        managerIds.contains(id) ? "MANAGER" : "WORKER"
                 );
                 projectUserRepository.save(projectMember);
             }
@@ -119,18 +112,19 @@ public class ProjectController {
     public String projectInfo(@RequestParam("project_id") String projectId, Principal principal, Model model) {
         long prjId = Long.parseLong(projectId);
         User curUser = userRepository.findByUsername(principal.getName());
-        String role =  PURepository.findByUserIdAndProjectId(curUser.getId(), prjId).getRole();
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        String role =  isAdmin ? "OWNER" : PURepository.findByUserIdAndProjectId(curUser.getId(), prjId).getRole();
         Project project = projectRepository.findById(prjId);
         model.addAttribute("project",project);
         model.addAttribute("role",role);
+        model.addAttribute("admin",isAdmin);
         return "/project/info";
     }
 
     @GetMapping("/project/members")
     public String projectMembers(@RequestParam("project_id") String projectId, Principal principal, Model model) {
+        //TODO Проверить пользователь может сюда заходить или нет
         long prjId = Long.parseLong(projectId);
-        User curUser = userRepository.findByUsername(principal.getName());
-        String role =  PURepository.findByUserIdAndProjectId(curUser.getId(), prjId).getRole();
         Project project = projectRepository.findById(prjId);
 
         Iterable<ProjectUser> projectUsers = PURepository.findAllByProjectId(prjId);
@@ -138,48 +132,86 @@ public class ProjectController {
         for (ProjectUser projectUser : projectUsers) {
             Optional<User> user = userRepository.findById(projectUser.getUserId());
             user.ifPresent(value -> showMembers.add(
-                    new ShowMember(value.getUsername(), projectUser.getRole())));
+                    new ShowMember(value, projectUser.getRole())));
         }
 
+        User curUser = userRepository.findByUsername(principal.getName());
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        String role =  isAdmin ? "OWNER" : PURepository.findByUserIdAndProjectId(curUser.getId(), prjId).getRole();
+
+        model.addAttribute("project",project);
         model.addAttribute("members",showMembers);
         model.addAttribute("role",role);
-        return "/project/info";
+        model.addAttribute("admin",isAdmin);
+        return "/project/members";
     }
 
-    @GetMapping("/project/tasks")
-    public String projectTasks(@RequestParam("project_id") String projectId, Principal principal, Model model) {
-        long prjId = Long.parseLong(projectId);
+
+
+    @GetMapping("/project/tasks/complete_task")
+    public String completeTask(@RequestParam("task_id") String strTaskId,
+                               Principal principal, Model model) {
+        long taskId = Long.parseLong(strTaskId);
         User curUser = userRepository.findByUsername(principal.getName());
-        ProjectUser projectUser = PURepository.findByUserIdAndProjectId(curUser.getId(),prjId);
-        Iterable<Task> tasks = null;
-        switch (projectUser.getRole()) {
-            case "OWNER","MANAGER" ->
-                tasks = taskRepository.findByProjectId(prjId);
-            case "WORKER" ->
-                tasks =  projectService.getTasksByProjectIdAndUserId(prjId,curUser.getId());
-        }
-        assert tasks != null; // TODO ВОЗМОЖНО НУЖНО КИДАТЬ НА "ВАМ НЕ ДОСТУПЕН ЭТОТ ПРОЕКТ"
-        Project project = projectRepository.findById(prjId);
-        LinkedList<ShowTask> showTasks = new LinkedList<>();
-        for (Task task : tasks) {
-            Iterable<User> members = projectService.getMembersByTaskId(task.getId());
-            showTasks.add(new ShowTask(task,members));
-        }
-        if (curUser.getAuthority().getId() == 1)
-            model.addAttribute("role","OWNER");
-        else
-            model.addAttribute("role",projectUser.getRole());
+        TaskUser taskUser = TURepository.findByUserIdAndTaskId(curUser.getId(),taskId);
+        Project project = taskRepository.findById(taskId).getProject();
         model.addAttribute("project",project);
-        model.addAttribute("tasks",showTasks);
-        return "/project/tasks";
+        if (taskUser != null) {
+            taskUser.setRole("COMPLETED");
+            TURepository.save(taskUser);
+        }
+        else {
+            return "redirect:/project/tasks";
+        }
+        if (TURepository.findAllByTaskIdAndRole(taskId,"WORKER") == null) {
+            Task task = taskRepository.findById(taskId);
+            task.setStatus(0);
+            taskRepository.save(task);
+        }
+
+        return "redirect:/project/tasks";
     }
+
+
+    @PostMapping("/project/delete_user")
+    String deleteMember(Principal principal,
+                        @RequestParam(value = "userId") String userIdStr,
+                        @RequestParam(value = "prjId") String prjIdStr) {
+        long userId = Long.parseLong(userIdStr);
+        long prjId = Long.parseLong(prjIdStr);
+        User curUser = userRepository.findByUsername(principal.getName());
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        if (!isAdmin)
+            return "redirect:/";
+        projectService.deleteWorkerFromProject(userId);
+        projectService.deleteWorkerFromTasks(userId,prjId);
+        return "redirect:/project/members?project_id=" + prjId;
+    }
+
+    @PostMapping("/project/change_role")
+    String changeRole(Principal principal,
+                      @RequestParam(value = "newRole") String newRole,
+                      @RequestParam(value = "userId") String userIdStr,
+                      @RequestParam(value = "prjId") String prjIdStr) {
+        long userId = Long.parseLong(userIdStr);
+        long prjId = Long.parseLong(prjIdStr);
+        // TODO TEST
+        ProjectUser projectUser = PURepository.findByUserIdAndProjectId(userId,prjId);
+        projectUser.setRole(newRole);
+        PURepository.save(projectUser);
+        projectService.deleteWorkerFromTasks(userId);
+
+        return "redirect:/project/members?project_id=" + prjId;
+    }
+
 
     class ShowMember {
-        private String role,username;
+        private String role, username;
+        private User user;
 
-        public ShowMember(String username, String role) {
+        public ShowMember(User user, String role) {
             this.role = role;
-            this.username = username;
+            this.user = user;
         }
 
         public String getRole() {
@@ -197,9 +229,17 @@ public class ProjectController {
         public void setUsername(String username) {
             this.username = username;
         }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
     }
 
-    class UserPublic {
+        class UserPublic {
         private String name;
         private long id;
 
@@ -225,67 +265,7 @@ public class ProjectController {
         }
     }
 
-    class ProjectForm {
-        private String title,description;
-        private String[] members;
 
-        public ProjectForm(String title, String description, String[] members) {
-            this.title = title;
-            this.description = description;
-            this.members = members;
-        }
 
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String[] getMembers() {
-            return members;
-        }
-
-        public void setMember(String[] members) {
-            this.members = members;
-        }
-    }
-
-    class ShowTask {
-        private Task task;
-        private Iterable<User> members;
-
-        public ShowTask(Task task, Iterable<User> members) {
-            this.task = task;
-            this.members = members;
-        }
-
-        public ShowTask() {}
-
-        public Task getTask() {
-            return task;
-        }
-
-        public void setTask(Task task) {
-            this.task = task;
-        }
-
-        public Iterable<User> getMembers() {
-            return members;
-        }
-
-        public void setMembers(Iterable<User> members) {
-            this.members = members;
-        }
-    }
 
 }

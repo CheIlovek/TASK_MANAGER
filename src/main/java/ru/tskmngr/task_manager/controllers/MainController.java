@@ -4,25 +4,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.tskmngr.task_manager.models.Project;
-import ru.tskmngr.task_manager.models.User;
-import ru.tskmngr.task_manager.repo.ProjectUserRepository;
-import ru.tskmngr.task_manager.repo.UserRepository;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import ru.tskmngr.task_manager.models.*;
+import ru.tskmngr.task_manager.repo.*;
 import ru.tskmngr.task_manager.service.ProjectService;
 
 import java.security.Principal;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 public class MainController {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    TaskUserRepository TURepo;
 
     @Autowired
     ProjectUserRepository PURepository;
     @Autowired
+    ProjectRepository projectRepository;
+    @Autowired
     ProjectService projectService;
+    @Autowired
+    TaskRepository taskRepository;
+
+    @Autowired
+    AuthorityRepository authorityRepository;
     @GetMapping("/")
     public String main() {
         return "redirect:/home";
@@ -31,21 +43,79 @@ public class MainController {
     @GetMapping("/home")
     public String home(Model model, Principal principal) {
         User curUser = userRepository.findByUsername(principal.getName());
-        Iterable<Project> projects = projectService.getProjectsByUserId(curUser.getId());
+        Iterable<Project> projects;
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        if (isAdmin)
+            projects = projectRepository.findAll();
+        else
+            projects = projectService.getProjectsByUserId(curUser.getId());
         LinkedList<ShowProject> showProjects = new LinkedList<>();
         for (Project project : projects) {
+            String role = isAdmin ? "ADMIN" : PURepository.findByUserIdAndProjectId(curUser.getId(),project.getId()).getRole();
             showProjects.add(new ShowProject(
                     project.getId(),
-                    PURepository.findByUserIdAndProjectId(curUser.getId(),project.getId()).getRole(),
+                    role,
                     project.getTitle()
             ));
         }
-        if (curUser.getAuthority().getId() == 1)
-            model.addAttribute("admin",true);
-        else
-            model.addAttribute("admin",false);
+
+        model.addAttribute("admin",isAdmin);
         model.addAttribute("projects",showProjects);
         return "/home";
+    }
+
+    @GetMapping("/admin_panel")
+    String adminPanel(Principal principal, Model model) {
+        User curUser = userRepository.findByUsername(principal.getName());
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        if (!isAdmin)
+            return "redirect:/";
+        List<Authority> roles =  authorityRepository.findAll();
+        List<User> users = userRepository.findAll();
+        model.addAttribute("admin",true);
+        model.addAttribute("users",users);
+        model.addAttribute("roles",roles);
+
+
+        return "/admin_panel";
+    }
+
+    @PostMapping("/admin_panel/change_role")
+    String changeRole(Principal principal,
+                      @RequestParam(value = "newRole") String newRole,
+                      @RequestParam(value = "userId") String userIdStr) {
+        long userId = Long.parseLong(userIdStr);
+        // TODO TEST
+        User curUser = userRepository.findByUsername(principal.getName());
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        if (!isAdmin)
+            return "redirect:/";
+        Optional<User> subject = userRepository.findById(userId);
+
+        if (subject.isPresent()) {
+            User user = subject.get();
+            user.setAuthority(authorityRepository.findByAuthority(newRole));
+            userRepository.save(user);
+            if (Objects.equals(newRole, "ROLE_ADMIN")) {
+                projectService.deleteWorkerFromTasks(userId);
+            }
+        }
+        return "redirect:/admin_panel";
+    }
+
+
+
+    @PostMapping("/admin_panel/delete_user")
+    String deleteUser(Principal principal, @RequestParam(value = "userId") String userIdStr) {
+        long userId = Long.parseLong(userIdStr);
+        User curUser = userRepository.findByUsername(principal.getName());
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        if (!isAdmin)
+            return "redirect:/";
+        projectService.deleteWorkerFromProject(userId);
+        projectService.deleteWorkerFromTasks(userId);
+        userRepository.deleteById(userId);
+        return "redirect:/admin_panel";
     }
 
 

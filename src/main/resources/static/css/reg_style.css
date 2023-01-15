@@ -1,0 +1,55 @@
+.container-reg {
+    width: 80%;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+}
+
+.box {
+    height: 260px;
+    width: 270px;
+    margin: auto auto;
+    display: flex;
+    border: 2px solid rgba(0, 0, 0, 0.548);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.384);
+}
+
+.form {
+    margin: auto;
+    display:block;
+    text-align: center;
+    line-height: 1;
+}
+
+.form_header {
+    font-size: 28px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.form_textline {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 16px;
+    text-align: left;
+}
+
+.form_input {
+    width: 100%;
+    margin: 5px auto;
+    box-sizing: border-box;
+}
+
+.sub_button {
+    font-size: 15px;
+    color: #fff;
+    margin-right: 10px;
+    text-decoration: none;
+    transition: color .2s linear;
+}
+
+
+.sub_button:hover {
+    color: #333;
+}

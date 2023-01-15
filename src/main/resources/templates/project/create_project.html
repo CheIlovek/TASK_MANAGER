@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create project</title>
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/create_style.css}">
+    <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header th:insert="blocks/header :: header"></header>
+
+
+    <br>
+    <div class="container">
+        <h1 class="page_title">New project</h1>
+
+        <form method="post" class="form" th:action="@{/project/create_project}" modelAttribute="projectForm">
+            <div class="form_input">
+                <label class="form_input_label" for="title">Project title</label>
+                <input class="form_input_input" type="text" name="title" id="title" placeholder="Project title"/>
+            </div>
+            <div class="form_input">
+                <label class="form_input_label" for="description">Project description</label>
+                <textarea class="form_input_textarea"  name="description" id="description" placeholder="Project description"></textarea>
+            </div>
+
+            <div class="form_input" id="memberSelector">
+                <div id="memberInput" tabindex="0">
+                    <label class="form_input_label">Project members</label>
+                    <input class="member-input" autocomplete="off" role="combobox"
+                           list="" id="input" placeholder="Select project members"/>
+                    <datalist  class="member-datalist" id="browsers">
+                        <option  class="member-option" th:each="user : ${users}"
+                                th:value="${user.getId()}" th:text="${user.getName()}"/>
+                    </datalist>
+                </div>
+                <div class="choosen-list" id="chosenList"></div>
+            </div>
+
+            <!--th:field="*{'a'}"-->
+            <!--
+            <select id="hobbies" size="10" multiple="multiple">
+                <option  class="member-option" th:each="user : ${users}"
+                         th:value="${user.getId()}" th:text="${user.getName()}"/>
+            </select>
+            -->
+
+
+            <button class="cnf btn" type="submit" value="create">Create</button>
+        </form>
+    </div>
+    <script th:src="@{/js/memberSelector.js}"></script>
+</body>
+</html>

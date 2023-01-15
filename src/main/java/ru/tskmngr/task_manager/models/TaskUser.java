@@ -1,5 +1,6 @@
 package ru.tskmngr.task_manager.models;
 
+import org.springframework.lang.Nullable;
 import ru.tskmngr.task_manager.models.composite_keys.TaskUserId;
 
 import javax.persistence.*;

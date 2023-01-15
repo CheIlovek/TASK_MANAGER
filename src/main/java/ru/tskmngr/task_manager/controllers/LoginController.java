@@ -35,10 +35,6 @@ class LoginController {
             model.addAttribute("error");
             return "/registration/signup";
         }
-//        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())){
-//            model.addAttribute("passwordError", "Пароли не совпадают");
-//            return "registration";
-//        }
         if (!userService.saveUser(userForm)){
             model.addAttribute("taken");
             return "/registration/signup";

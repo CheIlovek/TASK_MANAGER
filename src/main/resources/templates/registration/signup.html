@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
-    <link rel="stylesheet" th:href="@{/css/reg.css}">
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/reg_style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
+    <div class="container-reg">
         <div class="box">
             <form class="form" th:action="@{/registration/signup}" method="post" modelAttribute="userForm">
                 <h1 class="form_header">Sign Up</h1>
@@ -23,7 +24,7 @@
                 </h3>
                 <div>
                     <a class ="sub_button" th:href="@{/registration/login}">Log in</a>
-                    <button class ="sign_in" type="submit" value="Log In">Sign Up</button>
+                    <button class ="cnf btn" type="submit" value="Log In">Sign Up</button>
                 </div>
             </form> 
         </div>

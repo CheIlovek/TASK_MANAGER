@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home page</title>
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
     <link rel="stylesheet" th:href="@{/css/home_style.css}">
     <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
@@ -12,14 +13,12 @@
     <div class="container">
         <div class="title">
             <h1 class="page_title">Projects</h1>
-            <a class="add_proj" th:if="${admin}" th:href="@{/creation/create_project}">Create project</a>
+            <a class="cnf btn" th:if="${admin}" th:href="@{/project/create_project}">Create project</a>
         </div>
         <a th:each="project : ${projects}" class="table_block" th:href="@{'/project/info?project_id=' + ${project.getId()}}">
             <div class="table_name" th:text="${project.getTitle()}"></div>
             <div class="table_count_users" th:text="${project.getRole()}"></div>
         </a>
     </div>
-
-    <footer th:insert="blocks/basement :: basement"></footer>
 </body>
 </html>

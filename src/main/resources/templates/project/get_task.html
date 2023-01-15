@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Get task</title>
+    <link rel="stylesheet" th:href="@{/css/project_style.css}">
+    <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<header th:insert="blocks/project_header :: header"></header>
+
+<div class="container">
+    <div class="title">
+        <h1 class="page_title">Available tasks</h1>
+    </div>
+    <div class="tasks_container">
+        <div class="task_block" th:each="task : ${tasks}">
+            <div class="task_content">
+                <div class="task_head">
+                    <div class="task_name" th:text="${task.getTask().getTitle()}"></div>
+                    <div th:switch="${task.getTask().getPriority()}" class="task_priority">
+                        <span th:case="'0'" th:text="HIGH"></span>
+                        <span th:case="'1'" th:text="NORMAL"></span>
+                        <span th:case="'2'" th:text="LOW"></span>
+                    </div>
+                </div>
+                <div class="task_description" th:text="${task.getTask().getDescription()}"></div>
+                <ul class="task_members">
+                    <li class="task_member" th:each="member : ${task.getMembers()}"
+                        th:text="${member.getUsername()}"></li>
+                </ul>
+
+                <a class="add_proj" th:href="@{'/project/tasks/get_task?task_id=' + ${task.getTask().getId()}}">Get task</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

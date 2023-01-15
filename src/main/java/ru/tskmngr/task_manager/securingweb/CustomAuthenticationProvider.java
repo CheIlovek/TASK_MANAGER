@@ -2,6 +2,7 @@ package ru.tskmngr.task_manager.securingweb;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,33 +14,31 @@ import org.springframework.stereotype.Component;
 import ru.tskmngr.task_manager.models.User;
 import ru.tskmngr.task_manager.repo.UserRepository;
 
-// TODO ШИФРОВАНИЕ
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserRepository dao;
-
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    @Lazy
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        //получаем пользователя
         User user = dao.findByUsername(username);
-        //смотрим, найден ли пользователь в базе
         if (user == null) {
             throw new BadCredentialsException("Unknown user " + username);
         }
-        if (!password.equals(user.getPassword())) {
-            throw new BadCredentialsException("Bad password");
+        if (!bCryptPasswordEncoder.matches(password,user.getPassword())) {
+            throw new BadCredentialsException("Wrong password");
         }
         UserDetails principal =
-                new User(user.getUsername(), user.getPassword(), user.getAuthority());
+                new User(user.getUsername(), bCryptPasswordEncoder.encode(user.getPassword()), user.getAuthority());
         return new UsernamePasswordAuthenticationToken(
                 principal, password, principal.getAuthorities());
     }
