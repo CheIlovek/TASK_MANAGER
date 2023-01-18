@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Get task</title>
-    <link rel="stylesheet" th:href="@{/css/project_style.css}">
+    <link rel="stylesheet" th:href="@{/css/main_style.css}">
+    <link rel="stylesheet" th:href="@{/css/task_style.css}">
     <link rel="stylesheet" th:href="@{/css/blocks/header_style.css}">
     <link href="https://fonts.googleapis.com/css2?family=Catamaran&family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
@@ -32,7 +33,7 @@
                         th:text="${member.getUsername()}"></li>
                 </ul>
 
-                <a class="add_proj" th:href="@{'/project/tasks/get_task?task_id=' + ${task.getTask().getId()}}">Get task</a>
+                <a class="cnf btn" th:href="@{'/project/tasks/get_task?task_id=' + ${task.getTask().getId()}}">Get task</a>
             </div>
         </div>
     </div>

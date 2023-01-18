@@ -5,12 +5,9 @@
                 <a th:href="@{/home}" class="header_name">TASK MANAGER</a>
 
                 <nav class="nav">
-                    <!-- TODO Везде роль админа или не админа! -->
                     <a th:if="${admin}" th:href="@{/admin_panel}" class="nav_link">ADMIN</a>
                     <a th:if="${!admin}"th:href="@{/my_tasks}" class="nav_link">My tasks</a>
                     <a th:href="@{/logout}" class="nav_link">Log Out</a>
-                    <!-- TODO ПРи наведении кнопкам хана -->
-
                 </nav>
             </div>
         </div>

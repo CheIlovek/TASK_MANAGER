@@ -1,8 +1,5 @@
 package ru.tskmngr.task_manager.models;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.tskmngr.task_manager.repo.ProjectRepository;
-
 import javax.persistence.*;
 
 @Entity(name = "task")

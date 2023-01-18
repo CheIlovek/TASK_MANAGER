@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tskmngr.task_manager.models.*;
-import ru.tskmngr.task_manager.repo.*;
+import ru.tskmngr.task_manager.repositories.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -136,8 +136,11 @@ public class ProjectService {
         List<TaskUser> taskUsers = TURepo.findAllByUserId(userId);
         for (TaskUser taskUser : taskUsers) {
             TURepo.delete(taskUser);
-            if (TURepo.findByTaskId(taskUser.getTaskId()) == null) {
-                taskRepo.findById(taskUser.getTaskId()).setStatus(2);
+            List<TaskUser> taskUsers1 = TURepo.findByTaskId(taskUser.getTaskId());
+            if (taskUsers1 == null || taskUsers1.size() < 2) {
+                Task task = taskRepo.findById(taskUser.getTaskId());
+                task.setStatus(2);
+                taskRepo.save(task);
             }
         }
     }
@@ -151,9 +154,10 @@ public class ProjectService {
             if (taskRepo.findById(taskUser.getTaskId()).getProject().equals(project)) {
                 TURepo.delete(taskUser);
                 List<TaskUser> taskUsers1 = TURepo.findByTaskId(taskUser.getTaskId());
-                if (taskUsers1 == null || taskUsers1.size() == 1) {
-                    taskRepo.findById(taskUser.getTaskId()).setStatus(2);
-
+                if (taskUsers1 == null || taskUsers1.size() < 2) {
+                    Task task = taskRepo.findById(taskUser.getTaskId());
+                    task.setStatus(2);
+                    taskRepo.save(task);
                 }
             }
         }

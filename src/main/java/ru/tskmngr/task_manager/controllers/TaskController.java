@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.tskmngr.task_manager.models.*;
-import ru.tskmngr.task_manager.repo.*;
+import ru.tskmngr.task_manager.repositories.*;
 import ru.tskmngr.task_manager.service.ProjectService;
 
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.LinkedList;
-import java.util.List;
 
 @Controller
 public class TaskController {
@@ -94,6 +93,8 @@ public class TaskController {
             }
             model.addAttribute("project",project);
             model.addAttribute("tasks",showTasks);
+            boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+            model.addAttribute("admin",isAdmin);
             return "/project/get_task";
         }
         return "redirect:/home";
@@ -135,7 +136,10 @@ public class TaskController {
 
 
     @GetMapping("/project/create_task")
-    public String createProject(@RequestParam("project_id") String projectId, Model model) {
+    public String createProject(@RequestParam("project_id") String projectId, Principal principal, Model model) {
+        User curUser = userRepository.findByUsername(principal.getName());
+        boolean isAdmin = curUser.getAuthority().getAuthority().equals("ROLE_ADMIN");
+        model.addAttribute("admin",isAdmin);
         model.addAttribute("project_id",projectId);
         return "/project/create_task";
     }

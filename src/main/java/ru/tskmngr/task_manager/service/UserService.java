@@ -9,12 +9,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.tskmngr.task_manager.models.Authority;
 import ru.tskmngr.task_manager.models.User;
-import ru.tskmngr.task_manager.repo.AuthorityRepository;
-import ru.tskmngr.task_manager.repo.UserRepository;
+import ru.tskmngr.task_manager.repositories.AuthorityRepository;
+import ru.tskmngr.task_manager.repositories.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

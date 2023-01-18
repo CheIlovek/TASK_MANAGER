@@ -16,7 +16,7 @@
     <div class="title">
         <h1 class="page_title" th:text="${project.getTitle()}"></h1>
     </div>
-    <p class="project_description" th:text="${project.getDescription()}"></p>
+    <p class="page_title" th:text="${project.getDescription()}"></p>
     <a class="btn deny" th:if="${role == 'OWNER'}" th:href="@{'/project/delete_project?project_id=' + ${project.getId()}}">Delete project</a>
 
 

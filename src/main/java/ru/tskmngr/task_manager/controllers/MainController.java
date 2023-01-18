@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.tskmngr.task_manager.models.*;
-import ru.tskmngr.task_manager.repo.*;
+import ru.tskmngr.task_manager.repositories.*;
 import ru.tskmngr.task_manager.service.ProjectService;
 
 import java.security.Principal;

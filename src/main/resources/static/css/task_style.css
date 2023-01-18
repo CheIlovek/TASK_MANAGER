@@ -1,3 +1,7 @@
+.tasks_container {
+    vertical-align: top;
+}
+
 .task_block {
     display: inline-block;
     color: #000;;

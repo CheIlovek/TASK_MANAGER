@@ -7,7 +7,7 @@
     margin-left: 0;
     display: flex;
     border: 2px solid rgb(43, 48, 87);
-    border-radius: 20px;
+    border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.73);
     justify-content: space-between;
     align-items: center;
@@ -19,6 +19,7 @@
 }
 
 .user-name {
+    width: 200px;
     padding: 20px;
 }
 
@@ -40,6 +41,7 @@
 }
 
 .user-role {
+    align-self: self-end;
     background: rgb(2, 31, 94);
     width: 220px;
 }

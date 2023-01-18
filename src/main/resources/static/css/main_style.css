@@ -4,8 +4,8 @@ body {
     line-height: 1.6;
     font-size: 15px;
     color: #333;
-    background: rgb(63,64,83);
-    background: radial-gradient(circle, rgba(63,64,83,1) 0%, rgba(0,0,0,1) 100%);
+    background: rgb(39,40,51);
+    background: radial-gradient(circle, rgba(39,40,51,1) 70%, rgba(24,25,36,1) 100%);
 }
 
 *,
@@ -51,7 +51,7 @@ h1,h2,h3,h4,h5,h6 {
     outline: none;
 }
 
-.cnf { background: rgb(46, 94, 2); }
+.cnf { background-color: rgba(46, 94, 2,0.5); }
 .cnf:hover { background: rgb(67, 134, 5); }
 .cnf:active { background: rgb(32, 65, 1); }
 

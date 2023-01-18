@@ -54,7 +54,7 @@
                         th:text="${member.getUsername()}"></li>
                 </ul>
 
-                <a class="add_proj" th:if="${role == 'WORKER'}"
+                <a class="tsk-btn" th:if="${role == 'WORKER'}"
                    th:href="@{'/project/tasks/complete_task?task_id=' + ${task.getTask().getId()}}">Complete task</a>
             </div>
         </div>

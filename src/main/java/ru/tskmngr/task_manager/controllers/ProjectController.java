@@ -3,12 +3,11 @@ package ru.tskmngr.task_manager.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.tskmngr.task_manager.models.*;
-import ru.tskmngr.task_manager.repo.*;
+import ru.tskmngr.task_manager.repositories.*;
 import ru.tskmngr.task_manager.service.ProjectService;
 
 import java.security.Principal;
@@ -161,7 +160,7 @@ public class ProjectController {
             TURepository.save(taskUser);
         }
         else {
-            return "redirect:/project/tasks";
+            return "redirect:/project/tasks?project_id=" + project.getId();
         }
         if (TURepository.findAllByTaskIdAndRole(taskId,"WORKER") == null) {
             Task task = taskRepository.findById(taskId);
@@ -169,7 +168,7 @@ public class ProjectController {
             taskRepository.save(task);
         }
 
-        return "redirect:/project/tasks";
+        return "redirect:/project/tasks?project_id=" + project.getId();
     }
 
 
@@ -195,7 +194,6 @@ public class ProjectController {
                       @RequestParam(value = "prjId") String prjIdStr) {
         long userId = Long.parseLong(userIdStr);
         long prjId = Long.parseLong(prjIdStr);
-        // TODO TEST
         ProjectUser projectUser = PURepository.findByUserIdAndProjectId(userId,prjId);
         projectUser.setRole(newRole);
         PURepository.save(projectUser);

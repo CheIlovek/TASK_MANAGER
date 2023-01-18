@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.tskmngr.task_manager.models.User;
-import ru.tskmngr.task_manager.repo.UserRepository;
+import ru.tskmngr.task_manager.repositories.UserRepository;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
